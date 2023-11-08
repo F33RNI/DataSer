@@ -80,6 +80,7 @@ class Window(QMainWindow):
         self.btn_export.clicked.connect(lambda: self.generate_images(preview=False))
         self.btn_preview.clicked.connect(lambda: self.generate_images(preview=True))
         self.btn_new_random_batch.clicked.connect(lambda: self.preview_images(from_user=True))
+        self.btn_save_to_browse.clicked.connect(self.save_to_browse)
 
         # Connect signals
         self.progress_set_value_signal.connect(self.progressBar.setValue)
@@ -197,6 +198,21 @@ class Window(QMainWindow):
         self.cb_json.setChecked(self._config["generate_json"])
 
         logging.info("GUI loading finished")
+
+    def save_to_browse(self) -> None:
+        """
+        Asks users to select output directory
+        :return:
+        """
+        options = QFileDialog.Options()
+        folder_dialog = QFileDialog.getExistingDirectory(self,
+                                                         "Select folder where to save dataset",
+                                                         self._config["save_to"],
+                                                         options=options)
+        if folder_dialog:
+            self._config["save_to"] = folder_dialog
+            self.le_save_to.setText(folder_dialog)
+            self.config_update()
 
     def generate_images(self, preview: bool = False) -> None:
         """

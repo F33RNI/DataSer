@@ -1,6 +1,11 @@
 {
-    "version": "1.0.3",
-    "input_paths": [],
+    "version": "1.0.4",
+    "input_paths": [
+        {
+            "path": "C:/Users/F3rni/PycharmProjects/ImageDatasetGenerator/icon.png",
+            "label": "1"
+        }
+    ],
     "dev_brightness": 20,
     "dev_contrast": 20,
     "dev_hue": 5,
@@ -19,6 +24,6 @@
     "output_labeling_mode": 0,
     "output_format_mode": 0,
     "output_label_format": "{0}_{1}",
-    "save_to": "Test",
+    "save_to": "",
     "generate_json": true
 }

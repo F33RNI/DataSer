@@ -671,7 +671,7 @@
             <widget class="QLineEdit" name="le_save_to"/>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="btn_save_to_browse">
              <property name="text">
               <string>Browse</string>
              </property>
