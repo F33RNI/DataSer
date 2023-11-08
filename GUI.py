@@ -26,6 +26,7 @@ import sys
 import threading
 
 import cv2
+import numpy as np
 from PyQt5 import uic, QtGui, QtCore
 from PyQt5.QtGui import QPixmap, QImage
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QPushButton, QLineEdit, \
@@ -277,7 +278,11 @@ class Window(QMainWindow):
                 for random_image_index in random_batch:
                     try:
                         # Read image
-                        image = cv2.imread(self._generated_images[label][random_image_index], cv2.IMREAD_COLOR)
+                        stream = open(self._generated_images[label][random_image_index], "rb")
+                        image_bytes = np.asarray(bytearray(stream.read()), dtype=np.uint8)
+                        image = cv2.imdecode(image_bytes, cv2.IMREAD_COLOR)
+                        stream.close()
+                        del image_bytes
 
                         # Calculate resize k
                         image_max_dimension = max(image.shape[0], image.shape[1])

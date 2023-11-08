@@ -237,7 +237,11 @@ class ImageGenerator:
         logging.info("Generating {} files from {}".format(generate_files, input_file))
 
         # Open image
-        image = cv2.imread(input_file, cv2.IMREAD_UNCHANGED)
+        stream = open(input_file, "rb")
+        image_bytes = np.asarray(bytearray(stream.read()), dtype=np.uint8)
+        image = cv2.imdecode(image_bytes, cv2.IMREAD_UNCHANGED)
+        stream.close()
+        del image_bytes
 
         # Get image size
         width = image.shape[1]
@@ -267,13 +271,14 @@ class ImageGenerator:
         else:
             file_name_format = "{1}"
         if self._config["output_format_mode"] == 0:
-            file_name_format += ".png"
+            file_extension = ".png"
         elif self._config["output_format_mode"] == 1:
-            file_name_format += ".jpg"
+            file_extension = ".jpg"
         elif self._config["output_format_mode"] == 2:
-            file_name_format += ".tiff"
+            file_extension = ".tiff"
         else:
-            file_name_format += ".bmp"
+            file_extension = ".bmp"
+        file_name_format += file_extension
 
         file_name_counter = files_in_label
         if self._config["output_labeling_mode"] == 2:
@@ -301,18 +306,6 @@ class ImageGenerator:
             border_color += image_temp[:, 0].mean(axis=0)
             border_color += image_temp[:, width - 1].mean(axis=0)
             border_color /= 4
-
-            # Apply rotation
-            if self._config["dev_rotation"] > 0:
-                pass
-                """
-                # Rotate image
-                rotation_matrix = cv2.getRotationMatrix2D((width / 2, height / 2),
-                                                          random.randrange(-self._config["dev_rotation"],
-                                                                           self._config["dev_rotation"]), 1)
-                image_temp = cv2.warpAffine(image_temp, rotation_matrix, (width, height), borderValue=border_color)
-                del rotation_matrix
-                """
 
             # Calculate the rotation matrix
             rotation_matrix = cv2.getRotationMatrix2D((width / 2, height / 2),
@@ -406,7 +399,7 @@ class ImageGenerator:
 
             # Save image
             save_to_file = os.path.join(output_dir, file_name_format.format(label, file_name_counter))
-            cv2.imwrite(save_to_file, image_temp)
+            cv2.imencode(file_extension, image_temp)[1].tofile(save_to_file)
             generated_images_paths.append(save_to_file)
             file_name_counter += 1
             del image_temp

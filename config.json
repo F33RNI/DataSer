@@ -1,5 +1,5 @@
 {
-    "version": "1.0.0",
+    "version": "1.0.1",
     "input_paths": [],
     "dev_brightness": 20,
     "dev_contrast": 30,
@@ -14,7 +14,7 @@
     "resize_h": 64,
     "preview_size": 4,
     "imgs_per_label": 10,
-    "output_resolution_mode": 1,
+    "output_resolution_mode": 0,
     "output_channels_mode": 0,
     "output_labeling_mode": 0,
     "output_format_mode": 0,

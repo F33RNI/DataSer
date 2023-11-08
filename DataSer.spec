@@ -12,7 +12,7 @@ PyInstaller.config.CONF['workpath'] = './build'
 COMPILE_NAME = 'DataSer'
 
 # Version of main.py
-COMPILE_VERSION = "1.0.0"
+COMPILE_VERSION = "1.0.1"
 
 # Files and folders to include in final build directory (dist/COMPILE_NAME folder)
 INCLUDE_FILES = ['gui.ui',
