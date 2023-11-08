@@ -300,6 +300,40 @@ class ImageGenerator:
             # Apply the contrast and brightness adjustments using the cv2.convertScaleAbs function
             image_temp = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
 
+            # Apply HUE shift
+            if self._config["dev_hue"] > 0:
+                hue_value = random.randrange(-self._config["dev_hue"], self._config["dev_hue"]) * 1.27
+                alpha_channel = None
+                # B/W
+                if channels == 1:
+                    image_hsv = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+                    image_hsv = cv2.cvtColor(image_hsv, cv2.COLOR_BGR2HSV)
+                # RGB
+                elif channels == 3:
+                    image_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+                # RGBA
+                else:
+                    alpha_channel = cv2.split(image)[-1]
+                    image_hsv = cv2.cvtColor(image, cv2.COLOR_BGRA2BGR)
+                    image_hsv = cv2.cvtColor(image_hsv, cv2.COLOR_BGR2HSV)
+
+                # Apply hue shift
+                (h, s, v) = cv2.split(image_hsv)
+                del image_hsv
+                h = cv2.convertScaleAbs(h, alpha=1., beta=hue_value)
+
+                # Merge
+                image = cv2.cvtColor(cv2.merge([h, s, v]), cv2.COLOR_HSV2BGR)
+
+                # B/W
+                if channels == 1:
+                    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+                # RGBA
+                elif channels == 4:
+                    (b, g, r) = cv2.split(image)
+                    image = cv2.merge([b, g, r, alpha_channel])
+
             # Calculate border color
             border_color = image_temp[0, :].mean(axis=0)
             border_color += image_temp[height - 1, :].mean(axis=0)
