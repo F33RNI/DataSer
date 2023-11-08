@@ -145,7 +145,7 @@ class ImageGenerator:
                     self.output_temp_dir = tempfile.TemporaryDirectory()
                     output_dir = self.output_temp_dir.name
                 else:
-                    output_dir = self._config["save_to"]
+                    output_dir = os.path.abspath(self._config["save_to"])
                     if not os.path.exists(output_dir):
                         os.makedirs(output_dir)
             except Exception as e:

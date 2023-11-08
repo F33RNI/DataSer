@@ -204,6 +204,16 @@ class Window(QMainWindow):
         :param preview:
         :return:
         """
+        # Check output dir
+        if not preview:
+            save_to_parent = os.path.abspath(self._config["save_to"])
+            save_to_parent = os.path.join(save_to_parent, os.pardir)
+            if not os.path.exists(save_to_parent):
+                logging.error("Parent directory: {} not exists!".format(save_to_parent))
+                self.message_box("Error", QMessageBox.Critical,
+                                 "Parent directory: {} not exists!".format(save_to_parent))
+                return
+
         # Check if we have any input data
         if len(self._config["input_paths"]) == 0:
             logging.error("No input files or directories!")
@@ -252,7 +262,7 @@ class Window(QMainWindow):
         if from_user and self._last_action_generate_preview:
             self.generate_images(preview=True)
             return
-            
+
         # Clear previous preview
         logging.info("Clearing current preview")
         while self.vl_preview.count() > 0:
@@ -343,7 +353,8 @@ class Window(QMainWindow):
             # nfo in save as mode
             if not self._last_action_generate_preview:
                 self.message_box("Done!", QMessageBox.Information,
-                                 "Generated {} files".format(image_generator_result.generated_files_total))
+                                 "Generated {} files".format(image_generator_result.generated_files_total),
+                                 "Saved to: {}".format(os.path.abspath(self._config["save_to"])))
             self._generated_images = image_generator_result.paths_per_labels
 
         # Start preview
