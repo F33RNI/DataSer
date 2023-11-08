@@ -308,30 +308,31 @@ class ImageGenerator:
             border_color /= 4
 
             # Calculate the rotation matrix
-            rotation_matrix = cv2.getRotationMatrix2D((width / 2, height / 2),
-                                                      random.randrange(-self._config["dev_rotation"],
-                                                                       self._config["dev_rotation"]), 1)
+            if self._config["dev_rotation"] > 0:
+                rotation_range = random.randrange(-self._config["dev_rotation"], self._config["dev_rotation"])
+            else:
+                rotation_range = 0.
+            rotation_matrix = cv2.getRotationMatrix2D((width / 2, height / 2), rotation_range, 1)
             rotation_matrix = np.vstack([rotation_matrix, [0, 0, 1]])
 
             # Calculate shift, scale and stretch matrix
-            if self._config["dev_shift"]:
+            shift_range = 0.
+            if self._config["dev_shift"] > 0:
                 shift_range = int(min(width, height) * (random.randrange(-self._config["dev_shift"],
                                                                          self._config["dev_shift"]) / 100.))
-            else:
-                shift_range = 0.
+            stretch_range_x = 1.
+            stretch_range_y = 1.
             if self._config["dev_stretch"]:
                 stretch_range_x = random.randrange(-self._config["dev_stretch"], self._config["dev_stretch"]) / 100.
                 stretch_range_x += 1.
                 stretch_range_y = random.randrange(-self._config["dev_stretch"], self._config["dev_stretch"]) / 100.
                 stretch_range_y += 1.
-            else:
-                stretch_range_x = 1.
-                stretch_range_y = 1.
+
+            scale_range = 1.
             if self._config["dev_scale"]:
                 scale_range = random.randrange(-self._config["dev_scale"], self._config["dev_scale"]) / 100.
                 scale_range += 1.
-            else:
-                scale_range = 1.
+
             stretch_matrix = np.array([[scale_range * stretch_range_x, 0, shift_range],
                                        [0, scale_range * stretch_range_y, shift_range]], dtype=np.float32)
 
