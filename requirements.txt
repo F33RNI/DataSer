@@ -1,0 +1,5 @@
+opencv-python~=4.8.1.78
+PyQt5~=5.15.10
+QtModernRedux~=0.9.12
+numpy>=1.26.1
+pyinstaller~=6.1.0

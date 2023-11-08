@@ -1,0 +1,7 @@
+.idea/
+.venv/
+venv/
+Test/
+build/
+dist/
+icon.psd
