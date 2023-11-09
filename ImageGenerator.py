@@ -184,14 +184,11 @@ class ImageGenerator:
                                                                   output_dir,
                                                                   images_per_file,
                                                                   len(generated_files_per_label[label]),
-                                                                  generated_files_counter):
+                                                                  generated_files_counter,
+                                                                  total_files_to_generate):
                         # Append to the lists
                         generated_files_counter += 1
                         generated_files_per_label[label].append(generated_file)
-
-                        # Increment progress bar
-                        self._progress_set_value_signal.emit(
-                            int(generated_files_counter / total_files_to_generate * 100))
 
             # Export JSON with relative paths
             if not preview and self._config["generate_json"]:
@@ -222,7 +219,7 @@ class ImageGenerator:
             self._image_generator_result_signal.emit(ImageGeneratorResult(True, "Interrupted", None, 0))
 
     def _generate_for_file(self, input_file: str, label: str, output_dir: str, generate_files: int,
-                           files_in_label: int, generated_files_total: int) -> list:
+                           files_in_label: int, generated_files_total: int, total_files_to_generate: int) -> list:
         """
         Generates files
         (Main program funtion)
@@ -232,6 +229,7 @@ class ImageGenerator:
         :param generate_files:
         :param files_in_label:
         :param generated_files_total:
+        :param total_files_to_generate:
         :return:
         """
         logging.info("Generating {} files from {}".format(generate_files, input_file))
@@ -283,8 +281,13 @@ class ImageGenerator:
         file_name_counter = files_in_label
         if self._config["output_labeling_mode"] == 2:
             file_name_counter += generated_files_total
+        generated_files_total_temp = generated_files_total
         generated_images_paths = []
         for _ in range(generate_files):
+            # Increment progress bar
+            self._progress_set_value_signal.emit(
+                int(generated_files_total_temp / total_files_to_generate * 100))
+
             # Brightness and contrast variation
             brightness = 0
             if self._config["dev_brightness"] > 0:
@@ -437,6 +440,7 @@ class ImageGenerator:
             cv2.imencode(file_extension, image_temp)[1].tofile(save_to_file)
             generated_images_paths.append(save_to_file)
             file_name_counter += 1
+            generated_files_total_temp += 1
             del image_temp
 
         # Done

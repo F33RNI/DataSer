@@ -230,6 +230,17 @@ class Window(QMainWindow):
                                  "Parent directory: {} not exists!".format(save_to_parent))
                 return
 
+            # Show dir is not empty warning
+            save_to_path_abs = os.path.abspath(self._config["save_to"])
+            if os.path.exists(save_to_path_abs) and len(os.listdir(save_to_path_abs)) > 0:
+                logging.warning("Directory {} is not empty".format(save_to_path_abs))
+                reply = QMessageBox.warning(self, "Directory is not empty!",
+                                            "Directory\n{}\nis not empty. Are you sure you want to continue?"
+                                            .format(save_to_path_abs),
+                                            QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                if reply != QMessageBox.Yes:
+                    return
+
         # Check if we have any input data
         if len(self._config["input_paths"]) == 0:
             logging.error("No input files or directories!")

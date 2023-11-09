@@ -24,7 +24,7 @@ import os
 import sys
 
 # DataSer version
-__version__ = "1.0.4"
+__version__ = "1.1.0"
 
 # Default config file
 import GUI

@@ -1,11 +1,6 @@
 {
-    "version": "1.0.4",
-    "input_paths": [
-        {
-            "path": "C:/Users/F3rni/PycharmProjects/ImageDatasetGenerator/icon.png",
-            "label": "1"
-        }
-    ],
+    "version": "1.1.0",
+    "input_paths": [],
     "dev_brightness": 20,
     "dev_contrast": 20,
     "dev_hue": 5,
